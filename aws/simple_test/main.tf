@@ -109,6 +109,10 @@ resource aws_eip "my_eip" {
     depends_on = [aws_internet_gateway.gw]
 }
 
+output "server_public_ip" {
+  value = aws_eip.my_eip.public_ip
+}
+
 # create ami
 resource "aws_instance" "my_instance" {
     ami = ""
@@ -129,4 +133,12 @@ user_data = <<-EOF
     tags = {
         Name = "web-server"
     }
+}
+
+output "server_private_ip" {
+    value = aws_instance.my_instance.private_ip
+}
+
+output "server_id" {
+    value = aws_instance.my_instance.host_id
 }
