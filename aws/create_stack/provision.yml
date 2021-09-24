@@ -1,0 +1,6 @@
+- name: Getting Started First Playbook copy file
+  hosts: localhost
+  tasks:
+  - copy: 
+      src: "mytestfile" 
+      dest: "~/Projects"
