@@ -4,7 +4,7 @@ resource "aws_subnet" "my-vpc-subnet1" {
     cidr_block = "10.0.0.0/24"
     availability_zone = "eu-west-2a"
 
-    tags {
+    tags = {
         Name = "mesh-vpc-subnet"
     }
 }
@@ -14,7 +14,7 @@ resource "aws_subnet" "my-vpc-subnet2" {
     cidr_block = "10.0.1.0/24"
     availability_zone = "eu-west-2b"
 
-    tags {
+    tags = {
         Name = "my-vpc-subnet"
     }
 }

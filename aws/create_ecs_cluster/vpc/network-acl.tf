@@ -21,7 +21,7 @@ resource "aws_network_acl" "my-vpc-network-acl" {
         to_port    = 0
     }
 
-    tags {
+    tags = {
         Name = "my-vpc-network-acl"
     }
 }
