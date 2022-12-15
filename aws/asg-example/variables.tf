@@ -10,7 +10,7 @@ variable "aws_amis" {
   }
 }
 
-variable "availability_zones" {
+variable "azones" {
   default     = "eu-west-2a,eu-west-2b,eu-west-2c"
   description = "List of availability zones, use AWS CLI to find your "
 }
