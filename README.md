@@ -2,7 +2,7 @@
 
 https://developer.hashicorp.com/tutorials/library?product=terraform
 
-## Installing Linux
+## Installing on Linux
 
 ```bash
 sudo apt-get update && sudo apt-get install -y gnupg software-properties-common
