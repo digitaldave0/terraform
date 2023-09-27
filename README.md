@@ -60,3 +60,16 @@ terraform init
 terraform apply
 terraform destroy
 ```
+## Using terraform graph 
+
+### Install GraphViz first 
+
+```bash 
+sudo apt install graphviz
+```
+
+### Then can visualize execution plans to resource graph 
+
+```bash
+terraform graph | dot -Tsvg > graph.svg
+```
