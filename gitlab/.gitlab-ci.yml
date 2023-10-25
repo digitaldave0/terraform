@@ -1,0 +1,34 @@
+stages:
+  - checkout
+  - validate
+  - deploy
+
+checkout:
+  stage: checkout
+  script:
+    - git clone $CI_REPOSITORY_URL  # Replace with your Git repository URL
+  only:
+    - master  # Trigger this job only when changes are pushed to the master branch
+
+
+validate:
+  stage: validate
+  script:
+    - apt-get update -qy
+    - apt-get install -y python3-pip
+    - pip3 install awscli
+    - aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+    - aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+    - terraform init
+    - terraform fmt -check  # Check if Terraform files are formatted correctly
+    - terraform validate -check  # Check if Terraform files are valid
+    - terraform plan  # Create an execution plan
+  only:
+    - master  # Trigger this job only when changes are pushed to the master branch
+
+deploy:
+  stage: deploy
+  script:
+    - terraform apply -auto-approve
+  only:
+    - master  # Trigger this job only when changes are pushed to the master branch

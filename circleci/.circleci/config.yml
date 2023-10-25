@@ -1,0 +1,62 @@
+version: 2.1  # Use the desired version of CircleCI
+
+jobs:
+  checkout:
+    docker:
+      - image: circleci/python:3.7  # Replace with an appropriate base image
+    steps:
+      - checkout  # Clone the code repository
+      - run:
+          name: Checkout
+          command: git clone $CI_REPOSITORY_URL  # Replace with your Git repository URL
+      # Add any other necessary steps for the checkout job
+
+  validate:
+    docker:
+      - image: circleci/python:3.7  # Replace with an appropriate base image
+    steps:
+      - checkout  # Clone the code repository
+      - run:
+          name: Update and Install Dependencies
+          command: |
+            apt-get update -qy
+            apt-get install -y python3-pip
+            pip3 install awscli
+            aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+            aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+      - run:
+          name: Initialize and Validate Terraform
+          command: |
+            terraform init
+            terraform fmt -check  # Check if Terraform files are formatted correctly
+            terraform validate -check  # Check if Terraform files are valid
+            terraform plan  # Create an execution plan
+      # Add any other necessary steps for the validation job
+
+  deploy:
+    docker:
+      - image: circleci/python:3.7  # Replace with an appropriate base image
+    steps:
+      - checkout  # Clone the code repository
+      - run:
+          name: Apply Terraform Changes
+          command: terraform apply -auto-approve
+      # Add any other necessary steps for the deployment job
+
+workflows:
+  version: 2
+  build_and_deploy:
+    jobs:
+      - checkout:
+          filters:
+            branches:
+              only: master
+      - validate:
+          filters:
+            branches:
+              only: master
+      - deploy:
+          filters:
+            branches:
+              only: master
+

@@ -1,0 +1,48 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                script {
+                    // Clone the Git repository
+                    git branch: 'master', url: "$CI_REPOSITORY_URL" // Replace with your Git repository URL
+                }
+            }
+        }
+
+        stage('Validate') {
+            when {
+                expression { currentBuild.branch == 'master' }
+            }
+            steps {
+                script {
+                    // Update and install dependencies
+                    sh 'apt-get update -qy'
+                    sh 'apt-get install -y python3-pip'
+                    sh 'pip3 install awscli'
+                    sh "aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID"
+                    sh "aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY"
+                    // Initialize and validate Terraform
+                    sh 'terraform init'
+                    sh 'terraform fmt -check'  // Check if Terraform files are formatted correctly
+                    sh 'terraform validate -check'  // Check if Terraform files are valid
+                    sh 'terraform plan'  // Create an execution plan
+                }
+            }
+        }
+
+        stage('Deploy') {
+            when {
+                expression { currentBuild.branch == 'master' }
+            }
+            steps {
+                script {
+                    // Apply Terraform changes
+                    sh 'terraform apply -auto-approve'
+                }
+            }
+        }
+    }
+}
+
